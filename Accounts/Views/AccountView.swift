@@ -13,111 +13,36 @@ struct AccountView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Account name:")
-                        .font(.system(size: 18))
-                        .bold()
-                    Text(account.name)
-                        .font(.system(size: 18))
+            VStack {
+                Group {
+                    infoRow(title: "Account name:", value: account.name)
+                    infoRow(title: "Account number:", value: account.accountNumber)
+                    infoRow(title: "IBAN:", value: account.iban)
+                    infoRow(title: "Account currency:", value: account.currency)
+                    infoRow(title: "Account balance:", value: "\(account.balance.formatted())")
+                    infoRow(title: "Transparency from:", value: account.transparencyFrom)
+                    infoRow(title: "Transparency to:", value: account.transparencyTo)
+                    infoRow(title: "Actualization date:", value: account.actualizationDate)
+                    infoRow(title: "Account description:", value: account.description)
                 }
-                .padding(.vertical)
-                
-                Divider()
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Account number:")
-                        .font(.system(size: 18))
-                        .bold()
-                    Text(account.accountNumber)
-                        .font(.system(size: 18))
-                }
-                .padding(.vertical)
-                
-                Divider()
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("IBAN:")
-                        .font(.system(size: 18))
-                        .bold()
-                    Text(account.iban)
-                        .font(.system(size: 18))
-                }
-                .padding(.vertical)
-                
-                Divider()
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Account currency:")
-                        .font(.system(size: 18))
-                        .bold()
-                    Text(account.currency)
-                        .font(.system(size: 18))
-                }
-                .padding(.vertical)
-                
-                Divider()
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Account balance:")
-                        .font(.system(size: 18))
-                        .bold()
-                    Text("\(account.balance.formatted())")
-                        .font(.system(size: 18))
-                }
-                .padding(.vertical)
-                
-                Divider()
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Transparency from:")
-                        .font(.system(size: 18))
-                        .bold()
-                    Text(account.transparencyFrom)
-                        .font(.system(size: 18))
-                }
-                .padding(.vertical)
-                
-                Divider()
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Transparency to:")
-                        .font(.system(size: 18))
-                        .bold()
-                    Text(account.transparencyTo)
-                        .font(.system(size: 18))
-                }
-                .padding(.vertical)
-                
-                Divider()
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Actualization date:")
-                        .font(.system(size: 18))
-                        .bold()
-                    Text(account.actualizationDate)
-                        .font(.system(size: 18))
-                }
-                .padding(.vertical)
-                
-                Divider()
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Account description:")
-                        .font(.system(size: 18))
-                        .bold()
-                    Text(account.description)
-                        .font(.system(size: 18))
-                }
-                .padding(.vertical)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
         }
         .navigationTitle(account.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .navigationBar)
+    }
+    
+    private func infoRow(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(title)
+                .font(.system(size: 18))
+                .bold()
+            Text(value)
+                .font(.system(size: 18))
+            Divider()
+                .padding(5)
+        }
     }
 }
 
