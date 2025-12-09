@@ -72,7 +72,8 @@ The project demonstrates modern SwiftUI patterns and MVVM architecture:
   - Scrollable detail view showing all account properties
   - Displays account number, IBAN, currency, balance, transparency dates
   - Shows account name, description, and actualization date
-  - Clean layout with dividers separating information sections
+  - Clean layout with reusable `infoRow` helper method for consistent formatting
+  - Each information row uses a private helper function to eliminate code duplication
   - Navigation title with account name
 
 ## Dependency Injection
