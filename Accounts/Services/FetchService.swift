@@ -12,7 +12,6 @@ enum NetworkError: Error {
     case badResponse
 }
 
-@MainActor
 struct FetchService {
     
     private let baseURL = "https://webapi.developers.erstegroup.com/api/csas/public/sandbox/v3/transparentAccounts"
