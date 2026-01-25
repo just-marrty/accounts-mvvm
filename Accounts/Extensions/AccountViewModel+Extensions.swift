@@ -1,5 +1,5 @@
 //
-//  SampleAccount.swift
+//  AccountViewModel+Extensions.swift
 //  Accounts
 //
 //  Created by Martin Hrbáček on 07.12.2025.
@@ -8,7 +8,7 @@
 import Foundation
 
 extension AccountViewModel {
-    static let sampleAccount = AccountViewModel(account: Account(
+    static let sampleAccountsDetailView = AccountViewModel(account: Account(
         accountNumber: "000182-0388063349",
         bankCode: "0800",
         transparencyFrom: "2013-12-18T00:00:00",

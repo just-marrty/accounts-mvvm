@@ -15,7 +15,7 @@ class AccountListModelView {
     var isLoading = false
     var errorMessage: String?
     
-    let fetchService: FetchService
+    private let fetchService: FetchService
     
     init(fetchService: FetchService) {
         self.fetchService = fetchService
@@ -27,9 +27,9 @@ class AccountListModelView {
         
         do {
             let accounts = try await fetchService.fetchAccounts()
-            self.accounts = accounts.map(AccountViewModel.init)
+            self.accounts = accounts.map(AccountViewModel.init).sorted { $0.name < $1.name }
         } catch {
-            errorMessage = "Cannot load data: \(error.localizedDescription)"
+            errorMessage = StringConstants.errorMessage
         }
         
         isLoading = false
@@ -56,7 +56,6 @@ class AccountListModelView {
 
 struct AccountViewModel: Identifiable, Hashable {
     
-    // Thanks to the "typealias Account = TransparencyAccount.Account", we can simply write "Account" instead of the longer "TransparencyAccount.Account" type (everywhere in the app)
     private var account: Account
     
     init(account: Account) {
@@ -68,46 +67,46 @@ struct AccountViewModel: Identifiable, Hashable {
     }
     
     var accountNumber: String {
-        account.accountNumber ?? "N/A"
+        account.accountNumber ?? StringConstants.notAvailable
     }
     
     var bankCode: String {
-        account.bankCode ?? "N/A"
+        account.bankCode ?? StringConstants.notAvailable
     }
     
     var transparencyFrom: String {
-        account.transparencyFrom ?? "N/A"
+        account.transparencyFrom ?? StringConstants.notAvailable
     }
     
     var transparencyTo: String {
-        account.transparencyTo ?? "N/A"
+        account.transparencyTo ?? StringConstants.notAvailable
     }
     
     var publicationTo: String {
-        account.publicationTo ?? "N/A"
+        account.publicationTo ?? StringConstants.notAvailable
     }
     
     var actualizationDate: String {
-        account.actualizationDate ?? "N/A"
+        account.actualizationDate ?? StringConstants.notAvailable
     }
     
-    var balance: Double {
+    var balance: Decimal {
         account.balance ?? 0.0
     }
     
     var currency: String {
-        account.currency ?? "N/A"
+        account.currency ?? StringConstants.notAvailable
     }
     
     var name: String {
-        (account.name ?? "N/A").trimmingCharacters(in: .whitespaces) // Removes leading and trailing whitespace characters to prevent unwanted spacing in the UI. Especially when values come from a JSON API
+        (account.name ?? StringConstants.notAvailable).trimmingCharacters(in: .whitespaces)
     }
     
     var description: String {
-        account.description ?? "N/A"
+        account.description ?? StringConstants.notAvailable
     }
     
     var iban: String {
-        account.iban ?? "N/A"
+        account.iban ?? StringConstants.notAvailable
     }
 }

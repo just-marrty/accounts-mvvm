@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  AccountsMainView.swift
 //  Accounts
 //
 //  Created by Martin Hrbáček on 07.12.2025.
@@ -7,26 +7,26 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct AccountsMainView: View {
     
     @AppStorage("isDarkOn") private var isDarkOn: Bool = false
     
     @State private var vm = AccountListModelView(fetchService: FetchService())
     
     @State private var searchText: String = ""
-    @State private var alphabetical: Bool = false
+    @State private var alphabetical: Bool = true
     
     var body: some View {
         Group {
             if vm.isLoading {
-                ProgressView("Loading...")
+                ProgressView(StringConstants.loading)
             } else if let errorMessage = vm.errorMessage {
                 VStack {
-                    Text("Error")
+                    Text(StringConstants.error)
                         .font(.headline)
                     Text(errorMessage)
                         .foregroundColor(.secondary)
-                    Button("Try again") {
+                    Button(StringConstants.tryAgain) {
                         Task {
                             await vm.loadAccounts()
                         }
@@ -46,28 +46,30 @@ struct ContentView: View {
                         }
                     }
                     .listStyle(.plain)
-                    .navigationTitle("Accounts")
+                    .navigationTitle(StringConstants.navigationTitle)
                     .toolbarBackgroundVisibility(.visible, for: .navigationBar)
                     
                     .navigationDestination(for: AccountViewModel.self) { account in
-                        // AccountView
-                        AccountView(account: account)
+                        AccountsDetailView(account: account)
                     }
-                    .searchable(text: $searchText, prompt: "Search account")
+                    .searchable(text: $searchText, prompt: StringConstants.searchAccount)
                     .animation(.default, value: searchText)
-                    
-                    .navigationBarItems(trailing: Button(action: {
-                        isDarkOn.toggle()
-                    }, label: {
-                        Image(systemName: isDarkOn ? "sun.max.fill" : "moon.fill")
-                    }))
                     .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
                             Button {
                                 alphabetical.toggle()
                                 vm.sort(by: alphabetical)
                             } label: {
-                                Image(systemName: alphabetical ? "textformat.abc" : "textformat")
+                                Image(systemName: alphabetical ? StringConstants.textFormatABC : StringConstants.textFormat)
+                            }
+                        }
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button {
+                                Task {
+                                    isDarkOn.toggle()
+                                }
+                            } label: {
+                                Image(systemName: isDarkOn ? StringConstants.sunMaxFill : StringConstants.moonFill)
                             }
                         }
                     }
@@ -84,5 +86,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    AccountsMainView()
 }
