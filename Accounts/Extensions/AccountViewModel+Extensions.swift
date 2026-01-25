@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension AccountViewModel {
-    static let sampleAccountsDetailView = AccountViewModel(account: Account(
+extension AccountsViewModel {
+    static let sampleAccountsDetailView = AccountsViewModel(account: Account(
         accountNumber: "000182-0388063349",
         bankCode: "0800",
         transparencyFrom: "2013-12-18T00:00:00",

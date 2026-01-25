@@ -14,7 +14,7 @@ enum NetworkError: Error {
     case decodingFail
 }
 
-struct FetchService {
+struct FetchService: FetchServiceProtocol {
     
     func fetchAccounts() async throws -> [Account] {
         

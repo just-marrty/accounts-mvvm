@@ -38,7 +38,10 @@ struct StringConstants {
     static let textFormat = "textformat"
     static let sunMaxFill = "sun.max.fill"
     static let moonFill = "moon.fill"
+    static let exclamationMarkTriangle = "exclamationmark.triangle"
+    static let arrowClockwise = "arrow.clockwise"
     
-    // MARK: - N/A fallback
+    // MARK: - Fallbacks
     static let notAvailable = "N/A"
+    static let unknownCurrency = "unknown currency"
 }

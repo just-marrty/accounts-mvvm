@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AccountsDetailView: View {
     
-    let account: AccountViewModel
+    let account: AccountsViewModel
     
     var body: some View {
         ScrollView {
@@ -19,7 +19,7 @@ struct AccountsDetailView: View {
                     infoRow(title: StringConstants.accountNumber, value: account.accountNumber)
                     infoRow(title: StringConstants.iban, value: account.iban)
                     infoRow(title: StringConstants.accountCurrency, value: account.currency)
-                    infoRow(title: StringConstants.accountBalance, value: account.balance.formatted(.currency(code: account.currency)))
+                    infoRow(title: StringConstants.accountBalance, value: account.formattedBalance)
                     infoRow(title: StringConstants.transparencyFrom, value: account.transparencyFrom.formattedDateTime())
                     infoRow(title: StringConstants.transparencyTo, value: account.transparencyTo.formattedDateTime())
                     infoRow(title: StringConstants.actualizationDate, value: account.actualizationDate.formattedDateTime())

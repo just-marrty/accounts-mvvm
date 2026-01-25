@@ -11,7 +11,11 @@ struct AccountsMainView: View {
     
     @AppStorage("isDarkOn") private var isDarkOn: Bool = false
     
-    @State private var vm = AccountListModelView(fetchService: FetchService())
+    @State private var vm: AccountsListModelView
+    
+    init(fetchService: FetchServiceProtocol = FetchService()) {
+        _vm = State(wrappedValue: AccountsListModelView(fetchService: fetchService))
+    }
     
     @State private var searchText: String = ""
     @State private var alphabetical: Bool = true
@@ -22,16 +26,36 @@ struct AccountsMainView: View {
                 ProgressView(StringConstants.loading)
             } else if let errorMessage = vm.errorMessage {
                 VStack {
+                    Image(systemName: StringConstants.exclamationMarkTriangle)
+                        .foregroundStyle(.orange)
+                        .bold()
+                        .font(.system(size: 28, design: .rounded))
                     Text(StringConstants.error)
-                        .font(.headline)
+                        .font(.system(size: 26, design: .rounded))
+                        .bold()
+                        .padding(5)
                     Text(errorMessage)
-                        .foregroundColor(.secondary)
-                    Button(StringConstants.tryAgain) {
+                        .font(.system(size: 22, design: .rounded))
+                        .bold()
+                        .padding(5)
+                    Button {
                         Task {
                             await vm.loadAccounts()
                         }
+                    } label: {
+                        VStack {
+                            Text(StringConstants.tryAgain)
+                                .font(.system(size: 20, design: .rounded))
+                                .bold()
+                                .padding()
+                            Image(systemName: StringConstants.arrowClockwise)
+                                .font(.system(size: 20, design: .rounded))
+                                .bold()
+                        }
                     }
                 }
+                .multilineTextAlignment(.center)
+                .padding()
             } else {
                 NavigationStack {
                     List(vm.search(for: searchText)) { account in
@@ -49,7 +73,7 @@ struct AccountsMainView: View {
                     .navigationTitle(StringConstants.navigationTitle)
                     .toolbarBackgroundVisibility(.visible, for: .navigationBar)
                     
-                    .navigationDestination(for: AccountViewModel.self) { account in
+                    .navigationDestination(for: AccountsViewModel.self) { account in
                         AccountsDetailView(account: account)
                     }
                     .searchable(text: $searchText, prompt: StringConstants.searchAccount)
@@ -87,4 +111,36 @@ struct AccountsMainView: View {
 
 #Preview {
     AccountsMainView()
+}
+
+#Preview("Mock Data") {
+    struct MockService: FetchServiceProtocol {
+        func fetchAccounts() async throws -> [Account] {
+            return [
+            Accounts.Account(
+                accountNumber: "000182-0388063349",
+                bankCode: "0800",
+                transparencyFrom: "2013-12-18T00:00:00",
+                transparencyTo: "3000-01-01T00:00:00",
+                publicationTo: "3000-01-01T00:00:00",
+                actualizationDate: "2018-01-17T13:01:34",
+                balance: 0,
+                currency: "CZK",
+                name: "Město Černošice",
+                description: "Veřejná sbírka - sportovní hala",
+                iban: "CZ07 0800 0001 8203 8806 3349"
+            )
+            ]
+        }
+    }
+    return AccountsMainView(fetchService: MockService())
+}
+
+#Preview("Error State") {
+    struct ErrorService: FetchServiceProtocol {
+        func fetchAccounts() async throws -> [Account] {
+            throw NetworkError.httpError(404)
+        }
+    }
+    return AccountsMainView(fetchService: ErrorService())
 }

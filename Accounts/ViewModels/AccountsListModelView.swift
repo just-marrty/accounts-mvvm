@@ -1,5 +1,5 @@
 //
-//  AccountListModelView.swift
+//  AccountsListModelView.swift
 //  Accounts
 //
 //  Created by Martin Hrbáček on 07.12.2025.
@@ -10,14 +10,14 @@ import Observation
 
 @Observable
 @MainActor
-class AccountListModelView {
-    var accounts: [AccountViewModel] = []
+class AccountsListModelView {
+    var accounts: [AccountsViewModel] = []
     var isLoading = false
     var errorMessage: String?
     
-    private let fetchService: FetchService
+    private let fetchService: FetchServiceProtocol
     
-    init(fetchService: FetchService) {
+    init(fetchService: FetchServiceProtocol) {
         self.fetchService = fetchService
     }
     
@@ -27,7 +27,7 @@ class AccountListModelView {
         
         do {
             let accounts = try await fetchService.fetchAccounts()
-            self.accounts = accounts.map(AccountViewModel.init).sorted { $0.name < $1.name }
+            self.accounts = accounts.map(AccountsViewModel.init).sorted { $0.name < $1.name }
         } catch {
             errorMessage = StringConstants.errorMessage
         }
@@ -35,7 +35,7 @@ class AccountListModelView {
         isLoading = false
     }
     
-    func search(for searchTherm: String) -> [AccountViewModel] {
+    func search(for searchTherm: String) -> [AccountsViewModel] {
         if searchTherm.isEmpty {
             return accounts
         } else {
@@ -54,7 +54,7 @@ class AccountListModelView {
     }
 }
 
-struct AccountViewModel: Identifiable, Hashable {
+struct AccountsViewModel: Identifiable, Hashable {
     
     private var account: Account
     
@@ -90,8 +90,9 @@ struct AccountViewModel: Identifiable, Hashable {
         account.actualizationDate ?? StringConstants.notAvailable
     }
     
-    var balance: Decimal {
-        account.balance ?? 0.0
+    var formattedBalance: String {
+        let code = account.currency ?? StringConstants.unknownCurrency
+        return "\(account.balance?.formatted(.number) ?? StringConstants.notAvailable) \(code)"
     }
     
     var currency: String {
