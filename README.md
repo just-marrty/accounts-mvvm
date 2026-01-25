@@ -7,11 +7,14 @@ A SwiftUI application for browsing and exploring transparent bank accounts with 
 - Browse a list of transparent bank accounts with their basic information
 - Search functionality to filter accounts by name
 - Real-time search filtering with smooth animations
+- Automatic alphabetical sorting on load
 - Light and dark mode toggle with persistent preference
 - Alphabetical sorting toggle for account list
 - Loading states and error handling with retry functionality
 - Clean and modern UI with SwiftUI
 - Detailed account view with comprehensive information
+- Dynamic currency formatting based on account data
+- ISO8601 date formatting with user-friendly display
 
 ## Architecture
 
@@ -19,70 +22,97 @@ The project demonstrates modern SwiftUI patterns and MVVM architecture:
 
 ### Model
 
-- **TransparencyAccount** - Decodable wrapper model representing the root JSON object from API
-  - Contains nested `Account` struct representing individual account data
-  - Maps only necessary keys from JSON response
-  - Uses explicit `CodingKeys` enum for selective JSON decoding
-  - Typealias `Account = TransparencyAccount.Account` for simplified type references
+**AccountWrapper** - Decodable wrapper model representing the root JSON object from API
+- Contains nested `Account` struct representing individual account data
+- Maps only necessary keys from JSON response
+- Uses explicit `CodingKeys` enum for selective JSON decoding
+- Typealias `Account = AccountWrapper.Account` for simplified type references
 
-- **Account** - Nested struct representing a single transparent bank account
-  - Includes account number, bank code, IBAN, balance, currency, name, description
-  - Contains transparency period dates and actualization information
-  - All properties are optional to handle missing JSON values gracefully
-  - Conforms to `Decodable` and `Hashable` for JSON parsing and list operations
+**Account** - Nested struct representing a single transparent bank account
+- Includes account number, bank code, IBAN, balance, currency, name, description
+- Contains transparency period dates and actualization information
+- All properties are optional to handle missing JSON values gracefully
+- Conforms to `Decodable` and `Hashable` for JSON parsing and list operations
 
 ### Service
 
-- **FetchService** - Fetches and decodes account data from Erste Group API
-  - Uses URLSession with async/await for network requests
-  - Custom error handling with `NetworkError` enum
-  - Fetches data from Erste Group Public Transparent Accounts API sandbox endpoint
-  - Uses JSONDecoder for parsing API responses
-  - Requires API key authentication via `web-api-key` header
-  - Extracts nested accounts array from `TransparencyAccount` wrapper
+**FetchService** - Fetches and decodes account data from Erste Group API
+- Uses `URLSession` with async/await for network requests
+- Custom error handling with `NetworkError` enum
+- Comprehensive error printing for debugging
+- Fetches data from Erste Group Public Transparent Accounts API sandbox endpoint
+- Uses `JSONDecoder` with snake_case conversion for parsing API responses
+- Requires API key authentication via `web-api-key` header
+- Extracts nested accounts array from `AccountWrapper`
 
 ### ViewModel
 
-- **AccountListModelView** - Manages application state and business logic
-  - Uses `@Observable` macro for reactive UI updates
-  - `@MainActor` for thread-safe UI updates
-  - Dependency injection via initializer (receives `FetchService`)
-  - Search functionality with case-insensitive filtering
-  - Sorting functionality (alphabetical ascending/descending toggle)
-  - Loading and error state management
+**AccountListModelView** - Manages application state and business logic
+- Uses `@Observable` macro for reactive UI updates
+- `@MainActor` for thread-safe UI updates
+- Dependency injection via initializer (receives `FetchService`)
+- Search functionality with case-insensitive filtering
+- Sorting functionality (alphabetical ascending/descending toggle)
+- Automatic alphabetical sorting on data load
+- Loading and error state management
 
-- **AccountViewModel** - Presentation model wrapping `Account`
-  - Conforms to `Identifiable` and `Hashable` for SwiftUI list support
-  - Provides computed properties for view display with fallback values
-  - Handles optional account properties with default values ("N/A" for strings, 0.0 for balance)
-  - Separates domain model from presentation concerns
-  - Trims whitespace from name values for clean UI display
+**AccountViewModel** - Presentation model wrapping `Account`
+- Conforms to `Identifiable` and `Hashable` for SwiftUI list support
+- Provides computed properties for view display with fallback values
+- Handles optional account properties with default values (StringConstants.notAvailable for strings, 0.0 for balance)
+- Separates domain model from presentation concerns
+- Trims whitespace from name values for clean UI display
 
 ### Views
 
-- **ContentView** - Main container with searchable account list, dark mode toggle, and sorting
-  - Uses `@AppStorage` for persistent dark mode preference
-  - Real-time search filtering with `searchable` modifier
-  - `NavigationStack` for navigation
-  - Loading, error, and content states with appropriate UI
-  - Toolbar buttons for theme switching and alphabetical sorting
-  - Displays account name and currency in list view
+**AccountMainView** - Main container with searchable account list, dark mode toggle, and sorting
+- Uses `@AppStorage` for persistent dark mode preference
+- Real-time search filtering with `searchable` modifier
+- `NavigationStack` for navigation
+- Loading, error, and content states with appropriate UI
+- Toolbar buttons for theme switching and alphabetical sorting
+- Displays account name and currency in list view
+- Asynchronous dark mode toggle for smooth transitions
 
-- **AccountView** - Detailed view for individual account information
-  - Scrollable detail view showing all account properties
-  - Displays account number, IBAN, currency, balance, transparency dates
-  - Shows account name, description, and actualization date
-  - Clean layout with reusable `infoRow` helper method for consistent formatting
-  - Each information row uses a private helper function to eliminate code duplication
-  - Navigation title with account name
+**AccountsDetailView** - Detailed view for individual account information
+- Scrollable detail view showing all account properties
+- Displays account number, IBAN, currency with dynamic formatting
+- Shows formatted balance using account's currency code
+- Transparency dates and actualization date with ISO8601 formatting
+- Shows account name and description
+- Clean layout with reusable `infoRow` helper method for consistent formatting
+- Each information row uses a private helper function to eliminate code duplication
+- Navigation title with account name
+
+### Extensions
+
+**DateTimeFormatter+Extensions** - String extension for date formatting
+- Converts ISO8601 date strings to user-friendly format
+- Handles multiple ISO8601 formats (with/without fractional seconds)
+- Fallback handling for API dates without timezone information
+- Returns abbreviated date and shortened time format
+
+**AccountViewModel+Extensions** - Sample data for previews
+- Provides `sampleAccountsDetailView` for SwiftUI previews
+- Includes realistic test data matching API response structure
+
+### Constants
+
+**StringConstants** - Centralized string management
+- All user-facing strings in one place
+- Error messages and loading states
+- View labels and placeholders
+- System image names
+- Navigation titles
+- Fallback values (N/A)
+- Improves maintainability and enables easy localization
 
 ## Dependency Injection
 
 The project uses constructor-based dependency injection:
-
 - `AccountListModelView` receives `FetchService` as a dependency through its initializer
 - This allows for easy testing and swapping implementations
-- `FetchService` is injected in `ContentView` when creating the ViewModel
+- `FetchService` is injected in `AccountMainView` when creating the ViewModel
 - Promotes loose coupling and testability
 
 ## State Management
@@ -92,6 +122,7 @@ The project uses constructor-based dependency injection:
 - `@Observable` macro for reactive ViewModel updates
 - Reactive filtering with `searchable` modifier and computed properties
 - State-based sorting with toggle mechanism
+- Asynchronous state updates for smooth UI transitions
 
 ## Secrets Management
 
@@ -109,23 +140,24 @@ The project uses constructor-based dependency injection:
 - **JSON Decoding** - Custom Decodable implementation with nested structures and CodingKeys
 - **Searchable** - Built-in search functionality with real-time filtering
 - **AppStorage** - Persistent user preferences for theme
-- **Observable** - Using `@Observable` macro for reactive UI updates
+- **Observable** - Using @Observable macro for reactive UI updates
 - **Dependency Injection** - Constructor-based DI for testability and flexibility
 - **Animation** - Smooth transitions with default SwiftUI animations
 - **URLRequest** - Custom request configuration with API key header authentication
+- **Swift Extensions** - Custom String extensions for date formatting
+- **Currency Formatting** - Dynamic currency display based on API data
 
 ## Requirements
 
-- iOS 17.0+
-- Xcode 15.0+
-- Swift 5.9+
+- iOS 18.0+
+- Xcode 18.0+
+- Swift 6+
 - Erste Group API key (configured in Secrets.xcconfig)
 
 ## Credits
 
-This application uses the [Erste Group Public Transparent Accounts API](https://developers.erstegroup.com/) provided by Erste Group. The API provides access to public transparent accounts data, allowing users to browse and explore transparent bank accounts with detailed information.
+This application uses the Erste Group Public Transparent Accounts API provided by Erste Group. The API provides access to public transparent accounts data, allowing users to browse and explore transparent bank accounts with detailed information.
 
 The Public Transparent Accounts API enables access to publicly available transparent account information, including account details, balances, and transparency periods for accounts that are required by law to be publicly accessible.
 
-For more information about the API and Erste Group's developer resources, visit [developers.erstegroup.com](https://developers.erstegroup.com/).
-   
+For more information about the API and Erste Group's developer resources, visit [developers.erstegroup.com](https://developers.erstegroup.com).
