@@ -102,7 +102,7 @@ The project demonstrates modern SwiftUI patterns and MVVM architecture with prot
 - Includes realistic test data matching API response structure
 
 ### Constants
-**StringConstants** - Centralized string management
+**Strings** - Centralized string management
 - All user-facing strings in one place for easy maintenance
 - Error messages and loading states
 - View labels and placeholders (account details, navigation titles)
@@ -111,6 +111,12 @@ The project demonstrates modern SwiftUI patterns and MVVM architecture with prot
 - Fallback values (N/A, unknown currency)
 - Improves maintainability and enables easy localization
 - Organized by feature with MARK comments
+
+**APIConstants** - API configuration constants
+
+- Stores base URL, endpoint paths and header
+- Separates network configuration from business logic
+- Single source of truth for API endpoints
 
 ## Dependency Injection
 The project uses protocol-based constructor dependency injection:
