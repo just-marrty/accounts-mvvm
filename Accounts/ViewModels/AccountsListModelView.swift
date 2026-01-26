@@ -29,7 +29,7 @@ class AccountsListModelView {
             let accounts = try await fetchService.fetchAccounts()
             self.accounts = accounts.map(AccountsViewModel.init).sorted { $0.name < $1.name }
         } catch {
-            errorMessage = StringConstants.errorMessage
+            errorMessage = Strings.errorMessage
         }
         
         isLoading = false
@@ -67,47 +67,47 @@ struct AccountsViewModel: Identifiable, Hashable {
     }
     
     var accountNumber: String {
-        account.accountNumber ?? StringConstants.notAvailable
+        account.accountNumber ?? Strings.notAvailable
     }
     
     var bankCode: String {
-        account.bankCode ?? StringConstants.notAvailable
+        account.bankCode ?? Strings.notAvailable
     }
     
     var transparencyFrom: String {
-        account.transparencyFrom ?? StringConstants.notAvailable
+        account.transparencyFrom ?? Strings.notAvailable
     }
     
     var transparencyTo: String {
-        account.transparencyTo ?? StringConstants.notAvailable
+        account.transparencyTo ?? Strings.notAvailable
     }
     
     var publicationTo: String {
-        account.publicationTo ?? StringConstants.notAvailable
+        account.publicationTo ?? Strings.notAvailable
     }
     
     var actualizationDate: String {
-        account.actualizationDate ?? StringConstants.notAvailable
+        account.actualizationDate ?? Strings.notAvailable
     }
     
     var formattedBalance: String {
-        let code = account.currency ?? StringConstants.unknownCurrency
-        return "\(account.balance?.formatted(.number) ?? StringConstants.notAvailable) \(code)"
+        let code = account.currency ?? Strings.unknownCurrency
+        return "\(account.balance?.formatted(.number) ?? Strings.notAvailable) \(code)"
     }
     
     var currency: String {
-        account.currency ?? StringConstants.notAvailable
+        account.currency ?? Strings.notAvailable
     }
     
     var name: String {
-        (account.name ?? StringConstants.notAvailable).trimmingCharacters(in: .whitespaces)
+        (account.name ?? Strings.notAvailable).trimmingCharacters(in: .whitespaces)
     }
     
     var description: String {
-        account.description ?? StringConstants.notAvailable
+        account.description ?? Strings.notAvailable
     }
     
     var iban: String {
-        account.iban ?? StringConstants.notAvailable
+        account.iban ?? Strings.notAvailable
     }
 }

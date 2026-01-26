@@ -23,14 +23,14 @@ struct AccountsMainView: View {
     var body: some View {
         Group {
             if vm.isLoading {
-                ProgressView(StringConstants.loading)
+                ProgressView(Strings.loading)
             } else if let errorMessage = vm.errorMessage {
                 VStack {
-                    Image(systemName: StringConstants.exclamationMarkTriangle)
+                    Image(systemName: Strings.exclamationMarkTriangle)
                         .foregroundStyle(.orange)
                         .bold()
                         .font(.system(size: 28, design: .rounded))
-                    Text(StringConstants.error)
+                    Text(Strings.error)
                         .font(.system(size: 26, design: .rounded))
                         .bold()
                         .padding(5)
@@ -44,11 +44,11 @@ struct AccountsMainView: View {
                         }
                     } label: {
                         VStack {
-                            Text(StringConstants.tryAgain)
+                            Text(Strings.tryAgain)
                                 .font(.system(size: 20, design: .rounded))
                                 .bold()
                                 .padding()
-                            Image(systemName: StringConstants.arrowClockwise)
+                            Image(systemName: Strings.arrowClockwise)
                                 .font(.system(size: 20, design: .rounded))
                                 .bold()
                         }
@@ -70,13 +70,13 @@ struct AccountsMainView: View {
                         }
                     }
                     .listStyle(.plain)
-                    .navigationTitle(StringConstants.navigationTitle)
+                    .navigationTitle(Strings.navigationTitle)
                     .toolbarBackgroundVisibility(.visible, for: .navigationBar)
                     
                     .navigationDestination(for: AccountsViewModel.self) { account in
                         AccountsDetailView(account: account)
                     }
-                    .searchable(text: $searchText, prompt: StringConstants.searchAccount)
+                    .searchable(text: $searchText, prompt: Strings.searchAccount)
                     .animation(.default, value: searchText)
                     .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
@@ -84,7 +84,7 @@ struct AccountsMainView: View {
                                 alphabetical.toggle()
                                 vm.sort(by: alphabetical)
                             } label: {
-                                Image(systemName: alphabetical ? StringConstants.textFormatABC : StringConstants.textFormat)
+                                Image(systemName: alphabetical ? Strings.textFormatABC : Strings.textFormat)
                             }
                         }
                         ToolbarItem(placement: .navigationBarTrailing) {
@@ -93,7 +93,7 @@ struct AccountsMainView: View {
                                     isDarkOn.toggle()
                                 }
                             } label: {
-                                Image(systemName: isDarkOn ? StringConstants.sunMaxFill : StringConstants.moonFill)
+                                Image(systemName: isDarkOn ? Strings.sunMaxFill : Strings.moonFill)
                             }
                         }
                     }

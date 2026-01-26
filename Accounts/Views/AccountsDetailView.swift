@@ -15,15 +15,15 @@ struct AccountsDetailView: View {
         ScrollView {
             VStack {
                 Group {
-                    infoRow(title: StringConstants.accountName, value: account.name)
-                    infoRow(title: StringConstants.accountNumber, value: account.accountNumber)
-                    infoRow(title: StringConstants.iban, value: account.iban)
-                    infoRow(title: StringConstants.accountCurrency, value: account.currency)
-                    infoRow(title: StringConstants.accountBalance, value: account.formattedBalance)
-                    infoRow(title: StringConstants.transparencyFrom, value: account.transparencyFrom.formattedDateTime())
-                    infoRow(title: StringConstants.transparencyTo, value: account.transparencyTo.formattedDateTime())
-                    infoRow(title: StringConstants.actualizationDate, value: account.actualizationDate.formattedDateTime())
-                    infoRow(title: StringConstants.accountDescription, value: account.description)
+                    infoRow(title: Strings.accountName, value: account.name)
+                    infoRow(title: Strings.accountNumber, value: account.accountNumber)
+                    infoRow(title: Strings.iban, value: account.iban)
+                    infoRow(title: Strings.accountCurrency, value: account.currency)
+                    infoRow(title: Strings.accountBalance, value: account.formattedBalance)
+                    infoRow(title: Strings.transparencyFrom, value: account.transparencyFrom.formattedDateTime())
+                    infoRow(title: Strings.transparencyTo, value: account.transparencyTo.formattedDateTime())
+                    infoRow(title: Strings.actualizationDate, value: account.actualizationDate.formattedDateTime())
+                    infoRow(title: Strings.accountDescription, value: account.description)
                 }
             }
             .padding()

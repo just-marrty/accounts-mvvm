@@ -18,14 +18,14 @@ struct FetchService: FetchServiceProtocol {
     
     func fetchAccounts() async throws -> [Account] {
         
-        guard let url = URL(string: APIConstants.baseURL+APIConstants.endpoints) else {
+        guard let url = URL(string: API.baseURL+API.Endpoints.transparentAccounts) else {
             print("Invalid URL")
             throw NetworkError.invalidURL
         }
         
         var request = URLRequest(url: url)
         
-        request.addValue(Secrets.accountsAPIKey, forHTTPHeaderField: "web-api-key")
+        request.addValue(Secrets.accountsAPIKey, forHTTPHeaderField: API.Header.webApiKey)
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
