@@ -7,11 +7,6 @@
 
 import Foundation
 
-struct APIConstants {
-    static let baseURL = "https://webapi.developers.erstegroup.com/api/csas/public/sandbox/v3"
-    static let endpoints = "/transparentAccounts"
-}
-
 enum API {
     static let baseURL = "https://webapi.developers.erstegroup.com/api/csas/public/sandbox/v3"
     

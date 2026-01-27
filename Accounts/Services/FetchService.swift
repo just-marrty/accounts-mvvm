@@ -7,13 +7,6 @@
 
 import Foundation
 
-enum NetworkError: Error {
-    case invalidURL
-    case badResponse
-    case httpError(Int)
-    case decodingFail
-}
-
 struct FetchService: FetchServiceProtocol {
     
     func fetchAccounts() async throws -> [Account] {
@@ -44,7 +37,7 @@ struct FetchService: FetchServiceProtocol {
             let decoded = try decoder.decode(AccountWrapper.self, from: data)
             return decoded.accounts
         } catch {
-            print("Decoding Error")
+            print("Decoding Error: \(error.localizedDescription)")
             throw NetworkError.decodingFail
         }
     }
